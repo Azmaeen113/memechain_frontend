@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* MemeChain Brand Colors */
+    --background: 220 40% 5%;
+    --foreground: 0 0% 100%;
+
+    --card: 220 35% 8%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 220 35% 8%;
+    --popover-foreground: 0 0% 100%;
+
+    /* Vibrant Lime Green Primary */
+    --primary: 75 100% 63%;
+    --primary-foreground: 220 40% 5%;
+    --primary-glow: 75 100% 50%;
+
+    /* Bright Cyan Secondary */
+    --secondary: 180 100% 50%;
+    --secondary-foreground: 220 40% 5%;
+
+    /* Deep Ocean Accent */
+    --muted: 210 50% 15%;
+    --muted-foreground: 210 20% 70%;
+
+    --accent: 180 100% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 30% 20%;
+    --input: 210 30% 20%;
+    --ring: 75 100% 63%;
+
+    --radius: 1rem;
+
+    /* Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(210 50% 8%), hsl(220 40% 5%));
+    --gradient-primary: linear-gradient(135deg, hsl(75 100% 63%), hsl(75 100% 50%));
+    --gradient-glow: radial-gradient(circle, hsl(75 100% 63% / 0.3), transparent);
+
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsl(75 100% 63% / 0.4);
+    --shadow-cyan-glow: 0 0 40px hsl(180 100% 50% / 0.4);
+    --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.4);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(-20px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(75 100% 63% / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(75 100% 63% / 0.8);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background: linear-gradient(135deg, hsl(210 50% 8%), hsl(220 40% 5%));
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out forwards;
+  }
+
+  /* Hide sparkles background in hero section and footer */
+  .sparkles-hidden {
+    position: relative;
+    z-index: 10;
+  }
+  
+  .sparkles-hidden::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    z-index: -1;
+  }
+
+  .gradient-ocean {
+    background: var(--gradient-ocean);
+  }
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-primary {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .glow-cyan {
+    box-shadow: var(--shadow-cyan-glow);
+  }
+
+  .card-shadow {
+    box-shadow: var(--shadow-card);
+  }
+}
