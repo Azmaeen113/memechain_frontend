@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "wagmi",
+    "rainbowkit",
+    "viem",
+    "presale",
+    "Presale",
+    "Linea",
+    "walletid",
+    "memechain",
+    "Memechain",
+    "solana",
+    "Solana"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "build"
+  ]
+}
+
+

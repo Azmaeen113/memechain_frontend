@@ -44,30 +44,20 @@ export const SUPPORTED_TOKENS = {
     symbol: 'MATIC',
     name: 'Polygon',
     decimals: 18,
-    coingeckoId: 'matic-network',
+    coingeckoId: 'polygon-ecosystem-token',
     icon: '🟣',
     chains: {
       137: '0x0000000000000000000000000000000000000000', // Native MATIC
     }
   },
-  BASE: {
-    symbol: 'ETH',
-    name: 'Base ETH',
-    decimals: 18,
-    coingeckoId: 'ethereum',
-    icon: '🔵',
-    chains: {
-      8453: '0x0000000000000000000000000000000000000000', // Native ETH on Base
-    }
-  },
   ARB: {
-    symbol: 'ETH',
-    name: 'Arbitrum ETH',
+    symbol: 'ARB',
+    name: 'Arbitrum',
     decimals: 18,
-    coingeckoId: 'ethereum',
+    coingeckoId: 'arbitrum',
     icon: '🔵',
     chains: {
-      42161: '0x0000000000000000000000000000000000000000', // Native ETH on Arbitrum
+      42161: '0x0000000000000000000000000000000000000000', // ARB on Arbitrum (placeholder for display)
     }
   }
 } as const;
@@ -132,7 +122,7 @@ class PriceService {
         'tether': 1.0,
         'ethereum': 3000,
         'binancecoin': 300,
-        'matic-network': 0.8,
+        'polygon-ecosystem-token': 0.8,
       };
       
       return fallbackPrices[tokenId] || 1;

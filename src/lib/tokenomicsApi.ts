@@ -31,3 +31,4 @@ export const getTokenomics = async (): Promise<Tokenomics> => {
   return response.json();
 };
 
+

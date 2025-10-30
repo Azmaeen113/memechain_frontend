@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { SUPPORTED_TOKENS, MEMECHAIN_TOKEN, TokenSymbol, priceService } from '@/lib/priceService';
+import { getPresaleStatus } from '@/lib/api';
 import { useTokenPrices } from '@/hooks/useTokenPrices';
 import { useUser, useUserActions } from '@/contexts/UserContext';
 
@@ -46,6 +47,7 @@ export function BuySection({ className = '' }: BuySectionProps) {
   const [paymentToken, setPaymentToken] = useState<TokenSymbol>('USDT');
   const [paymentAmount, setPaymentAmount] = useState<string>('0');
   const [isCalculating, setIsCalculating] = useState(false);
+  const [memePrice, setMemePrice] = useState<number>(MEMECHAIN_TOKEN.price);
   
   // Transaction state
   const { sendTransaction, data: hash, error: sendError, isPending } = useSendTransaction();
@@ -54,7 +56,22 @@ export function BuySection({ className = '' }: BuySectionProps) {
     hash: hash || contractHash,
   });
 
-  // Calculate payment amount when inputs change
+  // Load current MEME price from backend
+  useEffect(() => {
+    const loadPrice = async () => {
+      try {
+        const res = await getPresaleStatus();
+        if (res?.success && typeof res.data?.currentPrice === 'number') {
+          setMemePrice(res.data.currentPrice);
+        }
+      } catch (e) {
+        // keep fallback price
+      }
+    };
+    loadPrice();
+  }, []);
+
+  // Calculate payment amount when inputs or price change
   useEffect(() => {
     const calculatePayment = async () => {
       if (!memeChainAmount || !paymentToken || !prices[paymentToken]) return;
@@ -68,11 +85,9 @@ export function BuySection({ className = '' }: BuySectionProps) {
           return;
         }
         
-        const calculatedAmount = priceService.calculatePaymentAmount(
-          amount,
-          paymentToken,
-          prices[paymentToken]
-        );
+        // Use backend-provided MEME price instead of static price
+        const totalUSD = amount * memePrice;
+        const calculatedAmount = totalUSD / (prices[paymentToken] || 1);
         
         const formattedAmount = priceService.formatTokenAmount(calculatedAmount, paymentToken);
         setPaymentAmount(formattedAmount);
@@ -85,7 +100,7 @@ export function BuySection({ className = '' }: BuySectionProps) {
     };
     
     calculatePayment();
-  }, [memeChainAmount, paymentToken, prices]);
+  }, [memeChainAmount, paymentToken, prices, memePrice]);
 
   // Handle successful transaction
   useEffect(() => {
@@ -107,7 +122,9 @@ export function BuySection({ className = '' }: BuySectionProps) {
           amount: parseFloat(memeChainAmount),
           transactionHash: hash || contractHash,
           paymentToken: paymentToken,
-          paymentAmount: parseFloat(paymentAmount)
+          paymentAmount: parseFloat(paymentAmount),
+          chainId: chain?.id,
+          network: chain?.name
         })
       });
 
@@ -230,7 +247,7 @@ export function BuySection({ className = '' }: BuySectionProps) {
           Buy MemeChain Tokens
         </h2>
         <p className="text-muted-foreground">
-          Purchase {MEMECHAIN_TOKEN.symbol} tokens at ${MEMECHAIN_TOKEN.price} per token
+          Purchase {MEMECHAIN_TOKEN.symbol} tokens at ${memePrice} per token
         </p>
       </div>
 
@@ -302,7 +319,7 @@ export function BuySection({ className = '' }: BuySectionProps) {
               </div>
             </div>
             <p className="text-sm text-muted-foreground">
-              Total Value: ${(parseFloat(memeChainAmount || '0') * MEMECHAIN_TOKEN.price).toFixed(2)} USD
+              Total Value: ${(parseFloat(memeChainAmount || '0') * memePrice).toFixed(2)} USD
             </p>
           </div>
 
@@ -363,11 +380,8 @@ export function BuySection({ className = '' }: BuySectionProps) {
                   size="sm"
                   onClick={() => {
                     const amount = parseFloat(memeChainAmount || '0');
-                    const calculatedAmount = priceService.calculatePaymentAmount(
-                      amount,
-                      paymentToken,
-                      prices[paymentToken] || 1
-                    );
+                    const totalUSD = amount * memePrice;
+                    const calculatedAmount = totalUSD / (prices[paymentToken] || 1);
                     setPaymentAmount(priceService.formatTokenAmount(calculatedAmount, paymentToken));
                   }}
                   disabled={isCalculating || isTransactionPending}

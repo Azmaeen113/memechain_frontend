@@ -1,58 +1,71 @@
-import React, { ReactNode } from 'react';
-import { WagmiProvider } from 'wagmi';
-import { RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowkit';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { config } from '@/config/wagmi';
-import { validateEnv } from '@/config/env';
-import { UserProvider } from '@/contexts/UserContext';
+import React from "react";
+import {
+  getDefaultConfig,
+  RainbowKitProvider,
+  darkTheme
+} from "@rainbow-me/rainbowkit";
+import { WagmiProvider } from "wagmi";
+import {
+  mainnet,
+  polygon,
+  bsc,
+  arbitrum,
+  base,
+  optimism,
+  avalanche,
+  fantom,
+  gnosis,
+  zkSync,
+  linea,
+  scroll,
+  mantle,
+  blast,
+  sepolia
+} from "wagmi/chains";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "@rainbow-me/rainbowkit/styles.css";
+import { UserProvider } from "@/contexts/UserContext";
 
-// Import RainbowKit styles
-import '@rainbow-me/rainbowkit/styles.css';
-
-// Create a client for React Query
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000, // 1 minute
-      refetchOnWindowFocus: false,
-    },
-  },
+const config = getDefaultConfig({
+  appName: "memechain",
+  projectId: "32f69a4af876e8f694e3bb99749029c3",
+  chains: [
+    mainnet,
+    polygon,
+    bsc,
+    arbitrum,
+    base,
+    optimism,
+    avalanche,
+    fantom,
+    gnosis,
+    zkSync,
+    linea,
+    scroll,
+    mantle,
+    blast,
+    sepolia
+  ]
 });
 
-/**
- * Web3Provider - Wraps the app with necessary Web3 providers
- * Includes RainbowKit, Wagmi, React Query, and User providers
- */
-export function WalletProvider({ children }: { children: ReactNode }) {
-  // Validate environment variables on app start
-  React.useEffect(() => {
-    const validation = validateEnv();
-    if (validation.warnings.length > 0) {
-      validation.warnings.forEach(warning => console.warn(warning));
-    }
-  }, []);
+const queryClient = new QueryClient();
 
+export function WalletProvider({
+  children
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
-          theme={{
-            lightMode: lightTheme({
-              accentColor: '#8b5cf6', // Purple accent matching the app theme
-              accentColorForeground: 'white',
-              borderRadius: 'medium',
-            }),
-            darkMode: darkTheme({
-              accentColor: '#8b5cf6', // Purple accent matching the app theme
-              accentColorForeground: 'white',
-              borderRadius: 'medium',
-            }),
-          }}
-          appInfo={{
-            appName: 'MemeChain Presale',
-            learnMoreUrl: 'https://memechain.com',
-          }}
-          initialChain={config.chains[0]} // Default to first chain (Ethereum)
+          theme={darkTheme({
+            accentColor: "#FF8A00",
+            accentColorForeground: "white",
+            borderRadius: "large",
+            fontStack: "system",
+            overlayBlur: "small"
+          })}
         >
           <UserProvider>
             {children}
